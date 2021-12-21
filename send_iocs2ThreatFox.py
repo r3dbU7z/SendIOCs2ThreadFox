@@ -40,7 +40,7 @@ def check_tag_regex(s):
         raise argparse.ArgumentTypeError("Invalid tag used '" + s + "'")
     return str(s)
 
-parser = argparse.ArgumentParser(description='Upload a malware sample to Malware Bazaar by abuse.ch')
+parser = argparse.ArgumentParser(description='Send IOCs to ThrearFox by abuse.ch')
 parser.add_argument('--threat', dest='threat_type', help='Threat Type', type=str, metavar="Threat Type", default="botnet_cc")
 parser.add_argument('--ioc_type', dest='ioc_type', help='IOC Type', type=str, metavar="IOC Type", default="ip:port")
 parser.add_argument('-i', '--ioc', dest='ioc', help='IP:PORT to share (required)', type=str, metavar="IOC", required=True)
