@@ -45,14 +45,21 @@ parser.add_argument('--threat', dest='threat_type', help='Threat Type', type=str
 parser.add_argument('--ioc_type', dest='ioc_type', help='IOC Type', type=str, metavar="IOC Type", default="ip:port")
 parser.add_argument('-i', '--ioc', dest='ioc', help='IP:PORT to share (required)', type=str, metavar="IOC", required=True)
 #Without Default arguments
-#parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', required=False, type=check_tag_regex, metavar="Tags", nargs="+")
-parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', required=False, type=check_tag_regex, metavar="Tags", default="Gafgyt", nargs="+")
+#parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', \
+#required=False, type=check_tag_regex, metavar="Tags", nargs="+")
+parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', \
+	required=False, type=check_tag_regex, metavar="Tags", default=['Gafgyt'], nargs="+")
 #Without Default arguments
-#parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', type=str, metavar="Malware Name", required=True)
-parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', type=str, metavar="Malware Name", default="elf.bashlite",)
-parser.add_argument('-c', '--comment', dest='comment', help='Comments: use quotes `Your comments` (optional)', type=str, metavar="Comment", default='')
-parser.add_argument('-l', '--confidense', dest='confidence', help='Confidence level: (optional) Must be between 0-100. Default: 50', type=str, metavar="Confidense", default="50")
-parser.add_argument('-r', '--reference',  dest='reference', help='Reference: use quotes `Your referenses` (optional)', type=str, metavar="Reference", default='')
+#parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', \
+#type=str, metavar="Malware Name", required=True)
+parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', \
+	type=str, metavar="Malware Name", default="elf.bashlite",)
+parser.add_argument('-c', '--comment', dest='comment', help='Comments: use quotes `Your comments` (optional)', \
+	type=str, metavar="Comment", default='')
+parser.add_argument('-l', '--confidense', dest='confidence', help='Confidence level: (optional) Must be between 0-100. Default: 50', \
+	type=str, metavar="Confidense", default="50")
+parser.add_argument('-r', '--reference',  dest='reference', help='Reference: use quotes `Your referenses` (optional)', \
+	type=str, metavar="Reference", default='')
 
 args = parser.parse_args()
 threat_type = args.threat_type
@@ -81,7 +88,7 @@ data = {
     'reference':        reference,
     'comment':          comment,
     'anonymous':        0,
-    'tags':					tag,
+    'tags':             tag,
     'iocs': [
         ioc
     ]
