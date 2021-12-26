@@ -43,3 +43,6 @@ I use this script to send IOCs, these are usually Gafgyt/Mirai botnets.
 Use this only after editing and testing. If something explodes there, I'm not going to be responsible for it.
 
 You can see more details about the ThreatFox API here: https://threatfox.abuse.ch/api/#threat-types
+
+# Inspired by
+This script partially uses the code from **urlhaus.py** by @cocaman -- https://github.com/cocaman/urlhaus
