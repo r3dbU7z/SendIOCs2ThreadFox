@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import string
 import requests
 import urllib3
@@ -6,10 +7,12 @@ import json
 import argparse
 import re
 
+from pygments import highlight, lexers, formatters
+
 __author__ = "@r3dbU7z"
 __copyright__ = "Copyright 2021, @r3dbU7z "
-__license__ = "GNU General Public License v3.0"
-__version__ = "0.0.6"
+__license__ = "Creative Commons Attribution-ShareAlike 4.0 International License."
+__version__ = "0.0.8"
 
 # Prepare HTTPSConnectionPool
 headers = {
@@ -40,26 +43,78 @@ def check_tag_regex(s):
         raise argparse.ArgumentTypeError("Invalid tag used '" + s + "'")
     return str(s)
 
-parser = argparse.ArgumentParser(description='Send IOCs to ThrearFox by abuse.ch')
-parser.add_argument('--threat', dest='threat_type', help='Threat Type', type=str, metavar="Threat Type", default="botnet_cc")
-parser.add_argument('--ioc_type', dest='ioc_type', help='IOC Type', type=str, metavar="IOC Type", default="ip:port")
-parser.add_argument('-i', '--ioc', dest='ioc', help='IP:PORT to share (required)', type=str, metavar="IOC", required=True)
+parser = argparse.ArgumentParser(description='Upload a malware sample to Malware Bazaar by abuse.ch')
+parser.add_argument(
+	'--threat',
+	dest='threat_type',
+	help='Threat Type',
+	type=str, metavar="Threat Type",
+	default="botnet_cc"
+)
+parser.add_argument(
+	'--ioc_type',
+	dest='ioc_type',
+	help='IOC Type',
+	type=str,
+	metavar="IOC Type",
+	default="ip:port"
+)
+parser.add_argument(
+	'-i', '--ioc',
+	dest='ioc',
+	help='IP:PORT to share (required)',
+	type=str, metavar="IOC",
+	required=True
+)
 #Without Default arguments
-#parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', \
-#required=False, type=check_tag_regex, metavar="Tags", nargs="+")
-parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', \
-	required=False, type=check_tag_regex, metavar="Tags", default=['Gafgyt'], nargs="+")
+#parser.add_argument('-t', '--tags', dest='tags', help='Tag, allowed characters: [A-Za-z0-9.-]', required=False, type=check_tag_regex, metavar="Tags", nargs="+")
+parser.add_argument(
+	'-t', '--tags',
+	dest='tags',
+	help='Tag, allowed characters: [A-Za-z0-9.-]',
+	required=False,
+	type=check_tag_regex,
+	metavar="Tags",
+	default=["Gafgyt"],
+	nargs="+"
+)
 #Without Default arguments
-#parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', \
-#type=str, metavar="Malware Name", required=True)
-parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', \
-	type=str, metavar="Malware Name", default="elf.bashlite",)
-parser.add_argument('-c', '--comment', dest='comment', help='Comments: use quotes `Your comments` (optional)', \
-	type=str, metavar="Comment", default='')
-parser.add_argument('-l', '--confidense', dest='confidence', help='Confidence level: (optional) Must be between 0-100. Default: 50', \
-	type=str, metavar="Confidense", default="50")
-parser.add_argument('-r', '--reference',  dest='reference', help='Reference: use quotes `Your referenses` (optional)', \
-	type=str, metavar="Reference", default='')
+#parser.add_argument('-m', '--malware_name', dest='malware', help='Name of malware: elf.bashlite (required)', type=str, metavar="Malware Name", required=True)
+parser.add_argument(
+	'-m',
+	'--malware_name',
+	dest='malware',
+	help='Name of malware: elf.bashlite (required)',
+	type=str,
+	metavar="Malware Name",
+	default="elf.bashlite"
+)
+parser.add_argument(
+	'-c',
+	'--comment',
+	dest='comment',
+	help='Comments: use quotes `Your comments` (optional)',
+	type=str,
+	metavar="Comment",
+	default=''
+)
+parser.add_argument(
+	'-l',
+	'--confidense',
+	dest='confidence',
+	help='Confidence level: (optional) Must be between 0-100. Default: 50',
+	type=str,
+	metavar="Confidense",
+	default="50"
+)
+parser.add_argument(
+	'-r', '--reference',
+	dest='reference',
+	help='Reference: use quotes `Your referenses` (optional)',
+	type=str,
+	metavar="Reference",
+	default=''
+)
 
 args = parser.parse_args()
 threat_type = args.threat_type
@@ -69,15 +124,13 @@ comment = args.comment
 tag = args.tags
 confidence_level = args.confidence
 reference = args.reference
+ioc = args.ioc
 
 print("\nThreat Type: " + threat_type)
 print("IOC Type: " + ioc_type)
 print("Malware Name: " + malware)
-print("Tag(s): ")
-print(*tag)
+print("Tag(s): " + ''.join(args.tags))
 print("\n")
-
-ioc = args.ioc
 
 data = {
     'query':            'submit_ioc',
@@ -88,13 +141,16 @@ data = {
     'reference':        reference,
     'comment':          comment,
     'anonymous':        0,
-    'tags':             tag,
+    'tags':    tag,
     'iocs': [
         ioc
     ]
 }
 
-json_data = json.dumps(data)
+json_data = json.dumps(data, indent=4, sort_keys=True)
 response = pool.request("POST", "/api/v1/", body=json_data)
 response = response.data.decode("utf-8", "ignore")
-print(response)
+#print(json_data)
+#print(response)
+colorful_json = highlight(response, lexers.JsonLexer(), formatters.TerminalTrueColorFormatter())
+print(colorful_json)
