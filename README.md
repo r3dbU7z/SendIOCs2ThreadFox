@@ -4,7 +4,7 @@
 -=This script is written by me for learning Python. Try don't laugh at the code, PLS=-
 ```
 
-```
+```console
 $ ./send_iocs2ThreatFox.py -h
 usage: send_iocs2ThreatFox.py [-h] [--threat Threat Type]
                               [--ioc_type IOC Type] -i IOC
